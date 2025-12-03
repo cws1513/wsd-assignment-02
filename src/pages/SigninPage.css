@@ -1,0 +1,133 @@
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top, #111 0%, #000 60%);
+    color: #fff;
+}
+
+.auth-container {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    max-width: 900px;
+    width: 100%;
+    padding: 3rem 2.5rem;
+    background: rgba(20, 20, 20, 0.95);
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+.auth-side {
+    flex: 1;
+}
+
+.auth-side h1 {
+    font-size: 2.4rem;
+    margin-bottom: 0.6rem;
+}
+
+.auth-side p {
+    font-size: 0.95rem;
+    color: #cccccc;
+    margin-bottom: 1.5rem;
+}
+
+.auth-toggle-btn {
+    border: 1px solid #e50914;
+    background: transparent;
+    color: #e50914;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.auth-toggle-btn:hover {
+    background: #e50914;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* 오른쪽 폼 영역 */
+.auth-form-wrapper {
+    flex: 1.1;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.auth-field label {
+    font-size: 0.85rem;
+    color: #cccccc;
+}
+
+.auth-field input {
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid #333;
+    padding: 0.6rem 0.8rem;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.auth-field input:focus {
+    outline: none;
+    border-color: #e50914;
+}
+
+.auth-field-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkbox-label {
+    font-size: 0.85rem;
+    color: #cccccc;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.auth-submit-btn {
+    margin-top: 0.5rem;
+    background: #e50914;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.auth-submit-btn:hover {
+    background: #f6121d;
+    transform: translateY(-1px);
+}
+
+/* 반응형 (모바일에서 위아래로 쌓이게) */
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+        padding: 2rem 1.5rem;
+        gap: 2rem;
+    }
+
+    .auth-side h1 {
+        font-size: 2rem;
+    }
+}
