@@ -1,0 +1,53 @@
+.home-container {
+    padding: 20px;
+    color: white;
+}
+
+.section-title {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+/* Grid */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+/* 영화 카드 */
+.movie-card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+.movie-card:hover {
+    transform: scale(1.07);
+}
+
+.movie-card img {
+    width: 100%;
+    display: block;
+}
+
+.movie-title {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.95rem;
+    color: #ddd;
+}
+
+/* 찜된 카드 강조 */
+.movie-card.wish {
+    box-shadow: 0 0 15px #e50914;
+    transform: scale(1.07);
+}
+
+.home-loading {
+    text-align: center;
+    padding: 3rem 0;
+    font-size: 1.4rem;
+}
