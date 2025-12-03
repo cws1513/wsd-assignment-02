@@ -1,0 +1,11 @@
+.app-layout {
+    min-height: 100vh;
+    background: #000;
+    color: #fff;
+}
+
+.main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
