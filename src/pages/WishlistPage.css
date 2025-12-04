@@ -1,79 +1,74 @@
 .wishlist-container {
-    padding: 20px;
-    color: white;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    color: #fff;
 }
 
-.section-title {
+.wishlist-title {
     font-size: 1.6rem;
-    margin-bottom: 1rem;
     font-weight: 700;
+    margin-bottom: 1rem;
 }
 
-/* HomePage와 동일한 그리드 재사용 */
-.movie-grid {
+.wishlist-empty {
+    text-align: center;
+    padding: 3rem 0;
+    font-size: 1rem;
+    color: #ccc;
+}
+
+/* 그리드 레이아웃 */
+.wishlist-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
+    gap: 18px;
 }
 
-/* 카드 스타일 */
-.movie-card {
+/* 카드 */
+.wishlist-card {
     background: #111;
     border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
 }
 
-.movie-card:hover {
-    transform: scale(1.05);
-}
-
-.movie-card img {
+.wishlist-card img {
     width: 100%;
     display: block;
 }
 
-/* 찜된 카드 강조 (wishlist는 기본이 찜 상태니까 항상 강조) */
-.movie-card.wish {
-    box-shadow: 0 0 15px #e50914;
+.wishlist-card-info {
+    padding: 0.6rem 0.5rem 0.7rem;
 }
 
-/* 카드 아래 정보 영역 */
-.movie-info {
-    padding: 0.5rem 0.6rem 0.8rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.movie-title {
-    font-size: 0.9rem;
-    color: #ddd;
-}
-
-/* 찜 해제 버튼 */
-.remove-btn {
-    border: 1px solid #e50914;
-    background: transparent;
-    color: #e50914;
-    border-radius: 999px;
-    padding: 0.3rem 0.7rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-    white-space: nowrap;
-}
-
-.remove-btn:hover {
-    background: #e50914;
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-.wishlist-empty {
-    margin-top: 1rem;
-    color: #aaa;
+.wishlist-card-info h3 {
     font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+    color: #f5f5f5;
+}
+
+.wishlist-remove {
+    font-size: 0.8rem;
+    color: #ff9ba5;
+}
+
+/* 호버 효과 */
+.wishlist-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.8);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .wishlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+    }
+
+    .wishlist-title {
+        font-size: 1.4rem;
+    }
 }

@@ -7,6 +7,7 @@ import SearchPage from "../pages/SearchPage";
 import WishlistPage from "../pages/WishlistPage";
 import ProtectedRoute from "./ProtectedRoute";
 
+
 export default function AppRouter() {
     return (
         <BrowserRouter>

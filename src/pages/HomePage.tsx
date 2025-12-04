@@ -19,7 +19,7 @@ export default function HomePage() {
     useEffect(() => {
         async function load() {
             try {
-                await new Promise((res) => setTimeout(res, 1500)); // 로딩 확인용 딜레이
+                await new Promise((res) => setTimeout(res, 1000)); // 로딩 확인용 딜레이
 
                 const [popularData, nowData, topData, upcomingData] =
                     await Promise.all([

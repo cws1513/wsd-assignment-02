@@ -1,0 +1,136 @@
+.popular-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    color: #fff;
+}
+
+.popular-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+/* View 선택 버튼 영역 */
+.popular-view-selector {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.popular-view-selector button {
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid #555;
+    background: #111;
+    color: #ddd;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.popular-view-selector button.active {
+    background: #e50914;
+    border-color: #e50914;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* 영화 카드 그리드 */
+.popular-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.popular-card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border 0.22s ease;
+    border: 1px solid transparent;
+}
+
+.popular-card img {
+    width: 100%;
+    display: block;
+}
+
+.popular-card-title {
+    font-size: 0.9rem;
+    padding: 0.45rem 0.4rem 0.6rem;
+    color: #ddd;
+}
+
+.popular-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* 찜(wishlist)된 카드 */
+.popular-card.wish {
+    border-color: #e50914;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
+}
+
+/* 로딩 영역 */
+.popular-loading {
+    text-align: center;
+    padding: 1.5rem 0;
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.popular-loading.more {
+    font-size: 0.9rem;
+}
+
+/* 페이지네이션 */
+.popular-pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.popular-pagination button {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: #111;
+    color: #eee;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.popular-pagination button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.popular-pagination button:not(:disabled):hover {
+    background: #e50914;
+    border-color: #e50914;
+    color: #fff;
+}
+
+.page-number {
+    min-width: 1.5rem;
+    text-align: center;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .popular-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+
+    .popular-title {
+        font-size: 1.4rem;
+    }
+}
