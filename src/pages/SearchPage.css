@@ -1,0 +1,92 @@
+.search-container {
+    padding: 20px;
+    color: white;
+}
+
+.search-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+/* 검색 폼 */
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    border: none;
+    background: #222;
+    color: white;
+    font-size: 1rem;
+}
+
+.search-form button {
+    padding: 0.7rem 1rem;
+    background: #e50914;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.search-form button:hover {
+    background: #ff1320;
+}
+
+/* 로딩 */
+.search-loading {
+    padding: 2rem 0;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* 그리드 */
+.search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.search-card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.search-card:hover {
+    transform: scale(1.07);
+}
+
+.search-card img {
+    width: 100%;
+    display: block;
+}
+
+.search-card h3 {
+    padding: 0.5rem;
+    font-size: 0.95rem;
+    color: #ddd;
+}
+
+/* Wishlist 표시 */
+.search-card.wish {
+    outline: 3px solid #e50914;
+}
+
+/* 검색 결과 없음 */
+.search-empty {
+    margin-top: 1rem;
+    color: #bbb;
+    text-align: center;
+    font-size: 1rem;
+}

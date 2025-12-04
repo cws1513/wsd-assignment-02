@@ -22,4 +22,9 @@ export const URLS = {
     upcoming: (page = 1) => makeUrl("/movie/upcoming", page),
     discoverByGenre: (genreId: number, page = 1) =>
         makeUrl(`/discover/movie&with_genres=${genreId}`, page),
+    search: (query: string, page = 1) =>
+        `${BASE_URL}/search/movie?api_key=${API_KEY}&language=ko-KR&page=${page}&query=${encodeURIComponent(
+            query
+        )}`,
 };
+
