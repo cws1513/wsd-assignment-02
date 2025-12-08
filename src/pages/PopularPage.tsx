@@ -1,6 +1,5 @@
 // src/pages/PopularPage.tsx
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { fetchMovies, URLS } from "../libs/URL";
 import { WishlistManager } from "../libs/useWishlist";
 import type { Movie } from "../libs/useWishlist";
@@ -11,10 +10,11 @@ export default function PopularPage() {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [viewType, setViewType] = useState<"table" | "infinite">("table");
+    const [showTopButton, setShowTopButton] = useState(false); // ⬅ Top 버튼 표시 여부
 
     const wishlist = new WishlistManager();
 
-    // 페이지/뷰 타입 변경 시 TMDB에서 인기 영화 가져오기
+    // ✅ 페이지 번호 / 뷰 타입이 바뀔 때마다 TMDB에서 인기 영화 가져오기
     useEffect(() => {
         let cancelled = false;
 
@@ -24,6 +24,8 @@ export default function PopularPage() {
                 await new Promise((res) => setTimeout(res, 1000));
                 const data = await fetchMovies(URLS.popular(page));
 
+                // Table → 해당 페이지 데이터만 사용
+                // Infinite → 이전 것 + 새 페이지 데이터 더해서 누적
                 setMovies((prev) =>
                     viewType === "table" || page === 1 ? data : [...prev, ...data]
                 );
@@ -43,9 +45,12 @@ export default function PopularPage() {
         };
     }, [page, viewType]);
 
-    // Infinite scroll
+    // ✅ Infinite Scroll 모드에서만: 스크롤 끝에 도달하면 다음 페이지 자동 로딩 + Top 버튼 표시
     useEffect(() => {
-        if (viewType !== "infinite") return;
+        if (viewType !== "infinite") {
+            setShowTopButton(false); // 테이블 모드일 땐 숨김
+            return;
+        }
 
         function handleScroll() {
             if (loading) return;
@@ -57,6 +62,9 @@ export default function PopularPage() {
             if (nearBottom) {
                 setPage((prev) => prev + 1);
             }
+
+            // 스크롤이 일정 높이 이상 내려가면 Top 버튼 보이게
+            setShowTopButton(window.scrollY > 400);
         }
 
         window.addEventListener("scroll", handleScroll);
@@ -65,25 +73,32 @@ export default function PopularPage() {
 
     const handleToggleWishlist = (movie: Movie) => {
         wishlist.toggleWishlist(movie);
+        // 스타일 즉시 반영 위해 새 배열로 복사
         setMovies([...movies]);
     };
 
     const switchToTable = () => {
         setViewType("table");
-        setPage(1);
+        setPage(1); // 1페이지부터 새로
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const switchToInfinite = () => {
-        setMovies([]);
+        setMovies([]); // 누적 리스트 초기화
         setPage(1);
         setViewType("infinite");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const handleTopClick = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     return (
         <div className="popular-container">
             <h1 className="popular-title">📈 대세 콘텐츠</h1>
 
-            {/* View 선택 버튼 */}
+            {/* ✅ View 선택 버튼 */}
             <div className="popular-view-selector">
                 <button
                     className={viewType === "table" ? "active" : ""}
@@ -99,10 +114,12 @@ export default function PopularPage() {
                 </button>
             </div>
 
+            {/* ✅ 첫 페이지 로딩 중일 때만 크게 표시 */}
             {loading && page === 1 && (
                 <div className="popular-loading">Loading...</div>
             )}
 
+            {/* ✅ 영화 카드 그리드 */}
             <div className={`popular-grid ${viewType}`}>
                 {movies.map((movie) => (
                     <div
@@ -112,22 +129,16 @@ export default function PopularPage() {
                         }`}
                         onClick={() => handleToggleWishlist(movie)}
                     >
-                        <Link
-                            to={`/movie/${movie.id}`}
-                            className="popular-card-link"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                alt={movie.title}
-                            />
-                            <h3 className="popular-card-title">{movie.title}</h3>
-                        </Link>
+                        <img
+                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                            alt={movie.title}
+                        />
+                        <h3 className="popular-card-title">{movie.title}</h3>
                     </div>
                 ))}
             </div>
 
-            {/* Table View용 페이지네이션 */}
+            {/* ✅ Table View일 때만 하단 페이지네이션 표시 */}
             {viewType === "table" && (
                 <div className="popular-pagination">
                     <button
@@ -143,10 +154,18 @@ export default function PopularPage() {
                 </div>
             )}
 
-            {/* Infinite 모드에서 추가 로딩 표시 */}
+            {/* ✅ Infinite 모드에서 추가로 불러올 때 표시 */}
             {viewType === "infinite" && loading && page > 1 && (
                 <div className="popular-loading more">더 불러오는 중...</div>
+            )}
+
+            {/* ✅ Infinite Scroll 모드 + 일정 스크롤 이상일 때 Top 버튼 표시 */}
+            {viewType === "infinite" && showTopButton && (
+                <button className="popular-top-btn" onClick={handleTopClick}>
+                    ↑ Top
+                </button>
             )}
         </div>
     );
 }
+
