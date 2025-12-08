@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { WishlistManager, type Movie } from "../libs/useWishlist";
 import "./WishlistPage.css";
 
 export default function WishlistPage() {
     const [movies, setMovies] = useState<Movie[]>([]);
     const wishlist = new WishlistManager();
-
+    const navigate = useNavigate();
 
     // 첫 렌더 시 localStorage에서 위시리스트 로드
     useEffect(() => {
         setMovies(wishlist.getWishlist());
     }, []);
-
-    const handleToggle = (movie: Movie) => {
-        wishlist.toggleWishlist(movie);
-        // 로컬스토리지 변경 반영 위해 다시 로드
-        setMovies(wishlist.getWishlist());
-    };
 
     return (
         <div className="wishlist-container">
@@ -36,7 +31,7 @@ export default function WishlistPage() {
                         <div
                             key={movie.id}
                             className="wishlist-card"
-                            onClick={() => handleToggle(movie)}
+                            onClick={() => navigate(`/movie/${movie.id}`)}
                         >
                             <img
                                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
@@ -44,7 +39,9 @@ export default function WishlistPage() {
                             />
                             <div className="wishlist-card-info">
                                 <h3>{movie.title}</h3>
-                                <span className="wishlist-remove">클릭하면 찜 취소</span>
+                                <span className="wishlist-sub">
+                                    상세 페이지로 이동
+                                </span>
                             </div>
                         </div>
                     ))}

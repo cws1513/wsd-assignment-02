@@ -1,3 +1,5 @@
+// src/components/layout/Header.tsx
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Header.css";
 import { getCurrentUser, logout } from "../../libs/Authentication";
@@ -7,8 +9,24 @@ export default function Header() {
     const navigate = useNavigate();
     const user = getCurrentUser(); // 로그인 여부 판단
 
+    // 스크롤 여부 상태
+    const [scrolled, setScrolled] = useState(false);
+
+    // 현재 경로와 비교해서 active 클래스 부여
     const isActive = (path: string) =>
         location.pathname === path ? "nav-link active" : "nav-link";
+
+    // 스크롤 이벤트 등록
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 10); // 10px 이상 스크롤되면 true
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        handleScroll(); // 초기 한 번 호출
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const handleLogout = () => {
         logout();
@@ -17,9 +35,8 @@ export default function Header() {
     };
 
     return (
-        <header className="header">
+        <header className={`header ${scrolled ? "header-scrolled" : ""}`}>
             <div className="header-inner">
-
                 {/* 로고 */}
                 <div className="logo">
                     <Link to="/">MyFlix</Link>
@@ -46,34 +63,19 @@ export default function Header() {
                     {user ? (
                         <>
                             {/* 사용자 이메일 */}
-                            <span style={{ fontSize: "0.85rem", marginRight: "0.6rem" }}>
-                                {user.id}
-                            </span>
+                            <span className="user-email">{user.id}</span>
 
                             {/* 로그아웃 버튼 */}
-                            <button
-                                onClick={handleLogout}
-                                style={{
-                                    borderRadius: "999px",
-                                    padding: "0.4rem 0.9rem",
-                                    border: "1px solid #e50914",
-                                    background: "#e50914",
-                                    color: "white",
-                                    cursor: "pointer",
-                                    fontSize: "0.85rem"
-                                }}
-                            >
-                                로그아웃
+                            <button onClick={handleLogout} className="logout-btn">
+                                Logout
                             </button>
                         </>
                     ) : (
-                        // 로그인 버튼 (기존 그대로 유지)
                         <Link to="/signin" className="login-btn">
                             Sign in
                         </Link>
                     )}
                 </div>
-
             </div>
         </header>
     );

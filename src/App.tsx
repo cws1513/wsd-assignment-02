@@ -1,9 +1,6 @@
+// src/App.tsx
 import AppRouter from "./router/AppRouter";
 
-function App() {
-    console.log("TMDB API KEY:", import.meta.env.VITE_TMDB_API_KEY);
-
+export default function App() {
     return <AppRouter />;
 }
-
-export default App;

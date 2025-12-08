@@ -1,58 +1,142 @@
 .search-container {
     padding: 20px;
-    color: white;
+    color: #fff;
 }
 
 .search-title {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
+    font-size: 1.6rem;
     font-weight: 700;
+    margin-bottom: 1rem;
 }
 
 /* 검색 폼 */
 .search-form {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .search-form input {
     flex: 1;
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
-    border: none;
-    background: #222;
-    color: white;
-    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid #333;
+    background: #111;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.search-form input:focus {
+    outline: none;
+    border-color: #e50914;
 }
 
 .search-form button {
-    padding: 0.7rem 1rem;
-    background: #e50914;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
     border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
+    background: #e50914;
+    color: #fff;
+    font-weight: 600;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .search-form button:hover {
-    background: #ff1320;
+    background: #f6121d;
+    transform: translateY(-1px);
+}
+
+/* 필터 영역 */
+.search-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.filter-group label {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.filter-group select {
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid #333;
+    padding: 0.4rem 0.6rem;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.filter-reset-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: transparent;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.filter-reset-btn:hover {
+    background: #444;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* 안내 / 결과 없음 */
+.search-helper,
+.search-empty {
+    margin-top: 2rem;
+    text-align: center;
+    color: #aaa;
 }
 
 /* 로딩 */
 .search-loading {
-    padding: 2rem 0;
-    font-size: 1.2rem;
+    margin-top: 1.5rem;
     text-align: center;
 }
 
-/* 그리드 */
+.skeleton-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-card {
+    height: 180px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #222 0%, #333 50%, #222 100%);
+    background-size: 200% 100%;
+    animation: skeleton-wave 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-wave {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* 결과 그리드 */
 .search-grid {
+    margin-top: 1rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
+    gap: 16px;
 }
 
 .search-card {
@@ -60,11 +144,17 @@
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .search-card:hover {
     transform: scale(1.07);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
+}
+
+.search-card.wish {
+    outline: 2px solid #e50914;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
 }
 
 .search-card img {
@@ -72,21 +162,63 @@
     display: block;
 }
 
-.search-card h3 {
-    padding: 0.5rem;
-    font-size: 0.95rem;
-    color: #ddd;
+.search-card-info {
+    padding: 0.5rem 0.6rem 0.7rem;
 }
 
-/* Wishlist 표시 */
-.search-card.wish {
-    outline: 3px solid #e50914;
+.search-card-info h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+    color: #f5f5f5;
 }
 
-/* 검색 결과 없음 */
-.search-empty {
-    margin-top: 1rem;
-    color: #bbb;
-    text-align: center;
-    font-size: 1rem;
+.search-card-info .rating {
+    font-size: 0.8rem;
+    color: #ffdd57;
+}
+
+/* 페이지네이션 */
+.search-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+}
+
+.search-pagination button {
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.search-pagination button:hover:not(:disabled) {
+    background: #333;
+    transform: translateY(-1px);
+}
+
+.search-pagination button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.search-pagination span {
+    font-size: 0.9rem;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .search-form {
+        flex-direction: column;
+    }
+
+    .search-filters {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

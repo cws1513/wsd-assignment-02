@@ -1,12 +1,17 @@
+/* 전체 배경: 넷플릭스 느낌의 다크 + 그라데이션 */
 .auth-page {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at top, #111 0%, #000 60%);
+    padding: 2rem 1rem;
+    background:
+            radial-gradient(circle at top, rgba(229, 9, 20, 0.25), transparent 55%),
+            radial-gradient(circle at bottom, rgba(0, 0, 0, 0.9), #000 70%);
     color: #fff;
 }
 
+/* 카드 박스 */
 .auth-container {
     display: flex;
     flex-direction: row;
@@ -14,13 +19,34 @@
     max-width: 900px;
     width: 100%;
     padding: 3rem 2.5rem;
-    background: rgba(20, 20, 20, 0.95);
+    background: rgba(20, 20, 20, 0.96);
     border-radius: 18px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transform-origin: center;
+    transition:
+            transform 0.35s ease,
+            box-shadow 0.35s ease,
+            background 0.35s ease,
+            border-color 0.35s ease;
 }
 
+/* 로그인 ↔ 회원가입 전환 시 살짝 스케일 효과 */
+.auth-container.login-mode {
+    transform: scale(1);
+}
+
+.auth-container.register-mode {
+    transform: scale(1.02);
+    border-color: rgba(229, 9, 20, 0.45);
+}
+
+/* 왼쪽 카피 영역 */
 .auth-side {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .auth-side h1 {
@@ -42,18 +68,30 @@
     border-radius: 999px;
     cursor: pointer;
     font-size: 0.9rem;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
 }
 
 .auth-toggle-btn:hover {
     background: #e50914;
     color: #fff;
     transform: translateY(-1px);
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.5);
 }
 
 /* 오른쪽 폼 영역 */
 .auth-form-wrapper {
     flex: 1.1;
+    /* 모드 전환 시 슬라이드 애니메이션 */
+    animation: slideInRight 0.4s ease;
+}
+
+/* 모드에 따라 방향 다르게 */
+.auth-container.register-mode .auth-form-wrapper {
+    animation: slideInLeft 0.4s ease;
 }
 
 .auth-form {
@@ -73,6 +111,11 @@
     color: #cccccc;
 }
 
+.auth-hint {
+    font-size: 0.8rem;
+    color: #888;
+}
+
 .auth-field input {
     background: #111;
     border-radius: 8px;
@@ -80,11 +123,17 @@
     padding: 0.6rem 0.8rem;
     color: #fff;
     font-size: 0.9rem;
+    transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
 }
 
 .auth-field input:focus {
     outline: none;
     border-color: #e50914;
+    background: #151515;
+    box-shadow: 0 0 0 1px rgba(229, 9, 20, 0.4);
 }
 
 .auth-field-row {
@@ -101,6 +150,11 @@
     gap: 0.4rem;
 }
 
+.checkbox-label input {
+    accent-color: #e50914;
+}
+
+/* 제출 버튼 */
 .auth-submit-btn {
     margin-top: 0.5rem;
     background: #e50914;
@@ -111,15 +165,42 @@
     font-weight: 600;
     cursor: pointer;
     color: #fff;
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
 }
 
 .auth-submit-btn:hover {
     background: #f6121d;
     transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(229, 9, 20, 0.7);
 }
 
-/* 반응형 (모바일에서 위아래로 쌓이게) */
+/* 슬라이드 인 애니메이션 */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(22px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-22px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 반응형 */
 @media (max-width: 768px) {
     .auth-container {
         flex-direction: column;
@@ -129,5 +210,9 @@
 
     .auth-side h1 {
         font-size: 2rem;
+    }
+
+    .auth-page {
+        padding: 1.5rem 1rem;
     }
 }

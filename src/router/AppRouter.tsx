@@ -5,8 +5,8 @@ import SigninPage from "../pages/SigninPage";
 import PopularPage from "../pages/PopularPage";
 import SearchPage from "../pages/SearchPage";
 import WishlistPage from "../pages/WishlistPage";
+import MovieDetailPage from "../pages/MovieDetailPage"; // ✅ 추가
 import ProtectedRoute from "./ProtectedRoute";
-
 
 export default function AppRouter() {
     return (
@@ -46,6 +46,16 @@ export default function AppRouter() {
                         element={
                             <ProtectedRoute>
                                 <WishlistPage />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* ✅ 영화 상세 페이지 (로그인 필요) */}
+                    <Route
+                        path="/movie/:id"
+                        element={
+                            <ProtectedRoute>
+                                <MovieDetailPage />
                             </ProtectedRoute>
                         }
                     />

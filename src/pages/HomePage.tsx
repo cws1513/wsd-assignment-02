@@ -1,4 +1,6 @@
+// src/pages/HomePage.tsx
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { fetchMovies, URLS } from "../libs/URL";
 import { WishlistManager } from "../libs/useWishlist";
 import type { Movie } from "../libs/useWishlist";
@@ -10,9 +12,8 @@ export default function HomePage() {
     const [topRated, setTopRated] = useState<Movie[]>([]);
     const [upcoming, setUpcoming] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
-    const [wishlistVersion, setWishlistVersion] = useState(0); // 찜 변경 시 강제 리렌더용
+    const [wishlistVersion, setWishlistVersion] = useState(0);
 
-    // 위시리스트 매니저 인스턴스
     const wishlist = new WishlistManager();
 
     // 첫 렌더 시 4개의 TMDB API 호출
@@ -43,7 +44,7 @@ export default function HomePage() {
         load();
     }, []);
 
-    // 공통 카드 렌더링 함수
+    // 공통 카드 렌더링 함수 (상세페이지 Link + 찜 토글)
     const renderMovieGrid = (movies: Movie[]) => (
         <div className="movie-grid">
             {movies.map((movie) => (
@@ -53,16 +54,22 @@ export default function HomePage() {
                         wishlist.isWishlisted(movie.id) ? "wish" : ""
                     }`}
                     onClick={() => {
+                        // 카드 빈 곳 클릭 → 찜 토글
                         wishlist.toggleWishlist(movie);
-                        // 찜 상태 변경 시 전체 섹션을 다시 그리기 위해 버전 증가
                         setWishlistVersion((v) => v + 1);
                     }}
                 >
-                    <img
-                        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                        alt={movie.title}
-                    />
-                    <h3 className="movie-title">{movie.title}</h3>
+                    <Link
+                        to={`/movie/${movie.id}`}
+                        className="movie-link"
+                        onClick={(e) => e.stopPropagation()} // 링크 클릭 시 찜 토글 막기
+                    >
+                        <img
+                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                            alt={movie.title}
+                        />
+                        <h3 className="movie-title">{movie.title}</h3>
+                    </Link>
                 </div>
             ))}
         </div>
@@ -73,22 +80,51 @@ export default function HomePage() {
     }
 
     return (
-        <div className="home-container" data-wishlist-version={wishlistVersion}>
-            {/* 1. 인기 영화 */}
-            <h1 className="section-title">🔥 인기 영화</h1>
-            {renderMovieGrid(popular)}
+        <div className="home-page" data-wishlist-version={wishlistVersion}>
+            {/* 🎬 넷플릭스 스타일 주토피아 2 배너 */}
+            <section className="hero">
+                <div className="hero-video-wrapper">
+                    <iframe
+                        className="hero-video"
+                        src="https://www.youtube.com/embed/H9boDm0J67w?autoplay=1&mute=1&loop=1&playlist=H9boDm0J67w&controls=0&rel=0"
+                        title="주토피아 2 예고편"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    />
+                    <div className="hero-overlay" />
+                </div>
 
-            {/* 2. 현재 상영작 */}
-            <h2 className="section-title">🎬 현재 상영작</h2>
-            {renderMovieGrid(nowPlaying)}
+                <div className="hero-content">
+                    <div className="hero-badge">새로운 극장 애니메이션</div>
+                    <h1 className="hero-title">주토피아 2</h1>
+                    <p className="hero-description">
+                        주디와 닉이 다시 돌아왔다! 대도시 주토피아에서 펼쳐지는 초특급
+                        버디 액션 어드벤처.
+                    </p>
 
-            {/* 3. 평점 높은 영화 */}
-            <h2 className="section-title">⭐ 평점 높은 영화</h2>
-            {renderMovieGrid(topRated)}
+                    <div className="hero-buttons">
+                        <button className="hero-btn hero-btn-primary">▶ 재생</button>
+                        <button className="hero-btn hero-btn-secondary">
+                            ℹ 자세히 보기
+                        </button>
+                    </div>
+                </div>
+            </section>
 
-            {/* 4. 개봉 예정작 */}
-            <h2 className="section-title">🗓️ 개봉 예정작</h2>
-            {renderMovieGrid(upcoming)}
+            {/* 기존 섹션 */}
+            <main className="home-main">
+                <h2 className="section-title">🔥 인기 영화</h2>
+                {renderMovieGrid(popular)}
+
+                <h2 className="section-title">🎬 현재 상영작</h2>
+                {renderMovieGrid(nowPlaying)}
+
+                <h2 className="section-title">⭐ 평점 높은 영화</h2>
+                {renderMovieGrid(topRated)}
+
+                <h2 className="section-title">🗓️ 개봉 예정작</h2>
+                {renderMovieGrid(upcoming)}
+            </main>
         </div>
     );
 }

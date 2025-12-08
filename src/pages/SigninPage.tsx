@@ -1,4 +1,5 @@
-import { useState } from "react";
+// src/pages/SigninPage.tsx
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SigninPage.css";
 import { tryLogin, tryRegister } from "../libs/Authentication";
@@ -14,12 +15,11 @@ export default function SigninPage() {
     const isLogin = mode === "login";
 
     const isValidEmail = (value: string) => {
-        // 간단한 이메일 형식 체크 (과제 요구사항)
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(value);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
         if (!isValidEmail(email)) {
@@ -28,7 +28,6 @@ export default function SigninPage() {
         }
 
         if (!isLogin) {
-            // 회원가입 모드일 때 비밀번호 확인 체크
             if (password !== passwordConfirm) {
                 alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
                 return;
@@ -40,20 +39,21 @@ export default function SigninPage() {
                 () => {
                     alert("회원가입에 성공했습니다. 로그인 화면으로 이동합니다.");
                     setMode("login");
+                    setPassword("");
+                    setPasswordConfirm("");
                 },
                 (msg) => {
                     alert(msg);
                 }
             );
         } else {
-            // 로그인 모드
             tryLogin(
                 email,
                 password,
                 remember,
                 () => {
                     alert("로그인에 성공했습니다.");
-                    navigate("/"); // 로그인 성공 시 홈으로 이동
+                    navigate("/");
                 },
                 (msg) => {
                     alert(msg);
@@ -64,15 +64,18 @@ export default function SigninPage() {
 
     const switchMode = () => {
         setMode(isLogin ? "register" : "login");
-        // 모드 바꿀 때 비밀번호 관련 필드 초기화
         setPassword("");
         setPasswordConfirm("");
     };
 
     return (
         <div className="auth-page">
-            <div className="auth-container">
-                {/* 왼쪽: 제목/모드 전환 */}
+            <div
+                className={`auth-container ${
+                    isLogin ? "login-mode" : "register-mode"
+                }`}
+            >
+                {/* 왼쪽 영역 */}
                 <div className="auth-side">
                     <h1>{isLogin ? "로그인" : "회원가입"}</h1>
                     <p>
@@ -89,7 +92,7 @@ export default function SigninPage() {
                     </button>
                 </div>
 
-                {/* 오른쪽: 폼 */}
+                {/* 오른쪽 폼 영역 */}
                 <div className="auth-form-wrapper">
                     <form className="auth-form" onSubmit={handleSubmit}>
                         <div className="auth-field">
@@ -106,7 +109,8 @@ export default function SigninPage() {
 
                         <div className="auth-field">
                             <label htmlFor="password">
-                                비밀번호 <span style={{ fontSize: "0.8rem", color: "#888" }}>
+                                비밀번호{" "}
+                                <span className="auth-hint">
                   (TMDB API Key 또는 비밀번호)
                 </span>
                             </label>
@@ -120,7 +124,6 @@ export default function SigninPage() {
                             />
                         </div>
 
-                        {/* 회원가입일 때만 비밀번호 확인 입력 */}
                         {!isLogin && (
                             <div className="auth-field">
                                 <label htmlFor="passwordConfirm">비밀번호 확인</label>
@@ -135,7 +138,6 @@ export default function SigninPage() {
                             </div>
                         )}
 
-                        {/* 로그인: Remember me */}
                         {isLogin && (
                             <div className="auth-field-row">
                                 <label className="checkbox-label">
@@ -149,7 +151,6 @@ export default function SigninPage() {
                             </div>
                         )}
 
-                        {/* 회원가입: 약관 동의 (필수) */}
                         {!isLogin && (
                             <div className="auth-field-row">
                                 <label className="checkbox-label">
