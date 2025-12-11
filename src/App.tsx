@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.tsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Layout from "./components/layout/Layout";
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+import HomePage from "./pages/HomePage";
+import PopularPage from "./pages/PopularPage";
+import SearchPage from "./pages/SearchPage";
+import WishlistPage from "./pages/WishlistPage";
+import MovieDetailPage from "./pages/MovieDetailPage";
+import SigninPage from "./pages/SigninPage";
+import ProtectedRoute from "./router/ProtectedRoute";
+
+import "./App.css";
+
+export default function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                {/* ✅ 로그인 없이 접근 가능한 페이지 */}
+                <Route path="/signin" element={<SigninPage />} />
+
+                {/* ✅ 나머지 전부: 공통 Layout + 로그인 보호 + 전환 애니메이션 */}
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<Layout />}>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/popular" element={<PopularPage />} />
+                        <Route path="/search" element={<SearchPage />} />
+                        <Route path="/wishlist" element={<WishlistPage />} />
+                        <Route path="/movie/:id" element={<MovieDetailPage />} />
+                    </Route>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
-
-export default App

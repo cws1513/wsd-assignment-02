@@ -62,7 +62,7 @@
 .hero-content {
     position: absolute;
     left: 4%;
-    bottom: 10%;   /* 🔥 수정됨: 헤더와 겹치지 않도록 아래로 내림 */
+    bottom: 22%;
     max-width: 40rem;
     display: flex;
     flex-direction: column;
@@ -125,19 +125,63 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
 
-/* 모바일 반응형 */
+/* ===================== */
+/*   반응형 - 히어로     */
+/* ===================== */
+
 @media (max-width: 768px) {
     .hero {
         height: 75vh;
     }
 
     .hero-content {
-        bottom: 12%;   /* 🔥 모바일에 맞게 조금 더 아래로 */
+        bottom: 16%;
         max-width: 80%;
     }
 
     .hero-title {
         font-size: 2.4rem;
+    }
+
+    .hero-description {
+        font-size: 0.9rem;
+    }
+
+    .hero-buttons {
+        gap: 0.6rem;
+    }
+
+    .hero-btn {
+        padding: 0.5rem 1.1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content {
+        bottom: 14%;
+        left: 5%;
+        max-width: 90%;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+        line-height: 1.15;
+    }
+
+    .hero-description {
+        font-size: 0.85rem;
+        max-width: 18rem;
+    }
+
+    .hero-buttons {
+        flex-wrap: wrap;
+    }
+
+    .hero-btn {
+        min-width: 6rem;
+        padding: 0.45rem 1rem;
+        font-size: 0.85rem;
     }
 }
 
@@ -311,12 +355,12 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
-/* 찜 해제 상태에서 hover 시 빨간톤 */
+/* 찜 해제 상태에서 hover 시 살짝 빨간톤 */
 .movie-card:not(.wish) .overlay-btn.secondary:hover {
     background: #e50914;
 }
 
-/* 이미 찜 상태 */
+/* 이미 찜된 상태에서 hover */
 .movie-card.wish .overlay-btn.secondary {
     background: #e50914;
 }
@@ -342,7 +386,7 @@
     font-weight: 700;
 }
 
-/* 모바일에서는 화살표 조금 작게 */
+/* 모바일에서는 화살표 조금 작게/덜 튀게 */
 @media (max-width: 768px) {
     .movie-row .swiper-button-prev,
     .movie-row .swiper-button-next {

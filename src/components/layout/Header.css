@@ -1,0 +1,149 @@
+/* 헤더 기본 – 처음엔 완전 투명 */
+.header {
+    position: fixed;          /* 화면 상단에 고정 */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+
+    background: transparent;  /* 완전 투명 */
+    box-shadow: none;
+    backdrop-filter: none;
+
+    color: white;
+    padding: 0.8rem 1.5rem;
+    transition:
+            background 0.3s ease,
+            box-shadow 0.3s ease,
+            padding 0.3s ease;
+}
+
+/* 스크롤 된 상태 – 넷플릭스처럼 검은 바 */
+.header.header-scrolled {
+    background: rgba(0, 0, 0, 0.96);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+    padding: 0.6rem 1.5rem;
+}
+
+.header-inner {
+    /* 🔥 넷플릭스처럼 왼쪽 정렬 느낌으로 조정 */
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;   /* 로고 + 메뉴를 왼쪽에 모으기 */
+    gap: 2rem;
+}
+
+/* 로고 */
+.logo a {
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: #e50914;
+    letter-spacing: 0.03em;
+}
+
+/* 네비게이션 */
+.nav {
+    display: flex;
+    gap: 1.4rem;
+    /* 🔥 로고와 약간 거리 두기 */
+    margin-left: 2rem;
+}
+
+.nav-link {
+    color: #ddd;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition:
+            color 0.2s ease,
+            transform 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.nav-link.active {
+    color: #fff;
+    border-bottom: 2px solid #e50914;
+    padding-bottom: 0.15rem;
+}
+
+/* 오른쪽 로그인/로그아웃 영역 */
+.auth-area {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    /* 🔥 메뉴들 뒤에서 오른쪽 끝으로 밀기 */
+    margin-left: auto;
+}
+
+.user-email {
+    font-size: 0.85rem;
+    color: #f5f5f5;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 공통 버튼 스타일 */
+.login-btn,
+.logout-btn {
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid #e50914;
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+/* 로그인 버튼 (transparent) */
+.login-btn {
+    background: transparent;
+    color: #e50914;
+}
+
+/* 로그아웃 버튼 (filled) */
+.logout-btn {
+    background: #e50914;
+    color: #fff;
+}
+
+/* 호버 공통 */
+.login-btn:hover,
+.logout-btn:hover {
+    background: #f6121d;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.5);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .header-inner {
+        gap: 0.75rem;
+    }
+
+    .nav {
+        gap: 0.8rem;
+        margin-left: 1rem;
+    }
+
+    .nav-link {
+        font-size: 0.85rem;
+    }
+
+    .user-email {
+        max-width: 120px;
+    }
+}
