@@ -1,9 +1,16 @@
 // src/pages/HomePage.tsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+
 import { fetchMovies, URLS } from "../libs/URL";
 import { WishlistManager } from "../libs/useWishlist";
 import type { Movie } from "../libs/useWishlist";
+
+import "swiper/css";
+import "swiper/css/navigation";
+
 import "./HomePage.css";
 
 export default function HomePage() {
@@ -16,11 +23,11 @@ export default function HomePage() {
 
     const wishlist = new WishlistManager();
 
-    // 첫 렌더 시 4개의 TMDB API 호출
+    // TMDB 데이터 4종 불러오기
     useEffect(() => {
         async function load() {
             try {
-                await new Promise((res) => setTimeout(res, 1000)); // 로딩 확인용 딜레이
+                await new Promise((res) => setTimeout(res, 1000));
 
                 const [popularData, nowData, topData, upcomingData] =
                     await Promise.all([
@@ -41,38 +48,75 @@ export default function HomePage() {
             }
         }
 
-        load();
+        void load();
     }, []);
 
-    // 공통 카드 렌더링 함수 (상세페이지 Link + 찜 토글)
-    const renderMovieGrid = (movies: Movie[]) => (
-        <div className="movie-grid">
-            {movies.map((movie) => (
-                <div
-                    key={movie.id}
-                    className={`movie-card ${
-                        wishlist.isWishlisted(movie.id) ? "wish" : ""
-                    }`}
-                    onClick={() => {
-                        // 카드 빈 곳 클릭 → 찜 토글
-                        wishlist.toggleWishlist(movie);
-                        setWishlistVersion((v) => v + 1);
-                    }}
-                >
-                    <Link
-                        to={`/movie/${movie.id}`}
-                        className="movie-link"
-                        onClick={(e) => e.stopPropagation()} // 링크 클릭 시 찜 토글 막기
-                    >
-                        <img
-                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                            alt={movie.title}
-                        />
-                        <h3 className="movie-title">{movie.title}</h3>
-                    </Link>
-                </div>
-            ))}
-        </div>
+    // ✅ 넷플릭스 스타일 슬라이드 렌더링 함수
+    const renderMovieRow = (label: string, movies: Movie[]) => (
+        <section className="movie-row" key={label}>
+            <div className="movie-row-header">
+                <h2 className="section-title">{label}</h2>
+            </div>
+
+            <Swiper
+                modules={[Navigation]}
+                navigation
+                spaceBetween={10}
+                slidesPerView={6}
+                slidesPerGroup={6}
+                breakpoints={{
+                    0: { slidesPerView: 3.2, slidesPerGroup: 3, spaceBetween: 8 },
+                    600: { slidesPerView: 4.2, slidesPerGroup: 4, spaceBetween: 10 },
+                    1024: { slidesPerView: 6, slidesPerGroup: 6, spaceBetween: 12 },
+                }}
+                className="movie-swiper"
+            >
+                {movies.map((movie) => {
+                    const isWish = wishlist.isWishlisted(movie.id);
+
+                    return (
+                        <SwiperSlide key={movie.id}>
+                            <div
+                                className={`movie-card ${isWish ? "wish" : ""}`}
+                                data-movie-id={movie.id}
+                            >
+                                <div className="movie-thumb-wrapper">
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                        alt={movie.title}
+                                        className="movie-thumb"
+                                    />
+
+                                    {/* hover 시 나타나는 오버레이 */}
+                                    <div className="movie-card-overlay">
+                                        <Link
+                                            to={`/movie/${movie.id}`}
+                                            className="overlay-btn primary"
+                                        >
+                                            상세 보기
+                                        </Link>
+
+                                        <button
+                                            className="overlay-btn secondary"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                wishlist.toggleWishlist(movie);
+                                                setWishlistVersion((v) => v + 1);
+                                            }}
+                                        >
+                                            {isWish ? "찜 해제" : "찜하기"}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <h3 className="movie-title">{movie.title}</h3>
+                            </div>
+                        </SwiperSlide>
+                    );
+                })}
+            </Swiper>
+        </section>
     );
 
     if (loading) {
@@ -80,8 +124,11 @@ export default function HomePage() {
     }
 
     return (
-        <div className="home-page" data-wishlist-version={wishlistVersion}>
-            {/* 🎬 넷플릭스 스타일 주토피아 2 배너 */}
+        <div
+            className="home-page page-transition"
+            data-wishlist-version={wishlistVersion}
+        >
+            {/* 🎬 넷플릭스 스타일 히어로 배너 */}
             <section className="hero">
                 <div className="hero-video-wrapper">
                     <iframe
@@ -95,7 +142,6 @@ export default function HomePage() {
                 </div>
 
                 <div className="hero-content">
-                    <div className="hero-badge">새로운 극장 애니메이션</div>
                     <h1 className="hero-title">주토피아 2</h1>
                     <p className="hero-description">
                         주디와 닉이 다시 돌아왔다! 대도시 주토피아에서 펼쳐지는 초특급
@@ -111,19 +157,12 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* 기존 섹션 */}
+            {/* 🎞 아래 섹션들 – 전부 슬라이드 형태 */}
             <main className="home-main">
-                <h2 className="section-title">🔥 인기 영화</h2>
-                {renderMovieGrid(popular)}
-
-                <h2 className="section-title">🎬 현재 상영작</h2>
-                {renderMovieGrid(nowPlaying)}
-
-                <h2 className="section-title">⭐ 평점 높은 영화</h2>
-                {renderMovieGrid(topRated)}
-
-                <h2 className="section-title">🗓️ 개봉 예정작</h2>
-                {renderMovieGrid(upcoming)}
+                {renderMovieRow("🔥 인기 영화", popular)}
+                {renderMovieRow("🎬 현재 상영작", nowPlaying)}
+                {renderMovieRow("⭐ 평점 높은 영화", topRated)}
+                {renderMovieRow("🗓️ 개봉 예정작", upcoming)}
             </main>
         </div>
     );

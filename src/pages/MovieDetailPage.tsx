@@ -1,5 +1,6 @@
+// src/pages/MovieDetailPage.tsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { WishlistManager } from "../libs/useWishlist";
 import type { Movie } from "../libs/useWishlist";
@@ -23,7 +24,9 @@ export default function MovieDetailPage() {
     const [movie, setMovie] = useState<MovieDetail | null>(null);
     const [recommendations, setRecommendations] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
+    const [wishVersion, setWishVersion] = useState(0); // 찜 상태 갱신용
 
+    // 로그인 시 저장된 TMDb-Key 사용 (과제 요구사항)
     const API_KEY = localStorage.getItem("TMDb-Key");
 
     useEffect(() => {
@@ -49,7 +52,7 @@ export default function MovieDetailPage() {
         }
 
         load();
-    }, [id]);
+    }, [id, API_KEY]);
 
     if (loading || !movie) {
         return <div className="detail-loading">Loading...</div>;
@@ -58,8 +61,7 @@ export default function MovieDetailPage() {
     const isWishlisted = wishlist.isWishlisted(movie.id);
 
     return (
-        <div className="detail-container">
-
+        <div className="detail-container page-transition" data-wish={wishVersion}>
             {/* 🔥 넷플릭스식 배너 */}
             <div
                 className="detail-banner"
@@ -68,18 +70,15 @@ export default function MovieDetailPage() {
                 }}
             >
                 <div className="banner-overlay">
-
                     {/* 왼쪽 정보 영역 */}
                     <div className="banner-info">
                         <h1 className="banner-title">{movie.title}</h1>
                         <p className="banner-overview">{movie.overview}</p>
 
                         <div className="banner-meta">
-                            <span>⭐ {movie.vote_average}</span>
+                            <span>⭐ {movie.vote_average.toFixed(1)}</span>
                             <span>📅 {movie.release_date}</span>
-                            <span>
-                                🎭 {movie.genres.map((g) => g.name).join(", ")}
-                            </span>
+                            <span>🎭 {movie.genres.map((g) => g.name).join(", ")}</span>
                         </div>
 
                         <button
@@ -88,10 +87,14 @@ export default function MovieDetailPage() {
                         >
                             ▶ 재생
                         </button>
+
                         <button
-                            className={`wish-toggle-btn ${isWishlisted ? "active" : ""}`}
+                            className={`wish-toggle-btn ${
+                                isWishlisted ? "active" : ""
+                            }`}
                             onClick={() => {
                                 wishlist.toggleWishlist(movie as any);
+                                setWishVersion((v) => v + 1);
                                 alert(
                                     isWishlisted
                                         ? "위시리스트에서 제거됨"
@@ -113,18 +116,55 @@ export default function MovieDetailPage() {
                 </div>
             </div>
 
-            {/* 🔽 추천 영화 */}
+            {/* 🔽 비슷한 콘텐츠 (넷플릭스식 카드 오버레이 적용) */}
             <h2 className="recommend-title">비슷한 콘텐츠</h2>
             <div className="recommend-grid">
-                {recommendations.map((m) => (
-                    <div key={m.id} className="recommend-card">
-                        <img
-                            src={`https://image.tmdb.org/t/p/w500${m.poster_path}`}
-                            alt={m.title}
-                        />
-                        <p>{m.title}</p>
-                    </div>
-                ))}
+                {recommendations.map((m) => {
+                    const recWished = wishlist.isWishlisted(m.id);
+
+                    return (
+                        <div
+                            key={m.id}
+                            className={`recommend-card ${recWished ? "wish" : ""}`}
+                        >
+                            <div className="recommend-thumb-wrapper">
+                                <img
+                                    className="recommend-thumb"
+                                    src={
+                                        m.poster_path
+                                            ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
+                                            : "https://via.placeholder.com/300x450?text=No+Image"
+                                    }
+                                    alt={m.title}
+                                />
+
+                                {/* hover 시 오버레이: 상세보기 / 찜하기 */}
+                                <div className="recommend-card-overlay">
+                                    <Link
+                                        to={`/movie/${m.id}`}
+                                        className="overlay-btn primary"
+                                    >
+                                        상세 보기
+                                    </Link>
+
+                                    <button
+                                        className="overlay-btn secondary"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            wishlist.toggleWishlist(m);
+                                            setWishVersion((v) => v + 1);
+                                        }}
+                                    >
+                                        {recWished ? "찜 해제" : "찜하기"}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p className="recommend-title-text">{m.title}</p>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

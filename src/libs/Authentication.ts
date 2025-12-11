@@ -1,3 +1,5 @@
+// src/libs/Authentication.ts
+
 // 사용자 정보 타입
 export interface User {
     id: string;        // 이메일
@@ -21,6 +23,35 @@ function saveUsers(users: User[]) {
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
+/**
+ * ✅ TMDB API Key 검증 함수
+ * /configuration 엔드포인트에 요청해서 200이면 유효한 키라고 판단
+ */
+async function validateTmdbKey(apiKey: string): Promise<boolean> {
+    const trimmed = apiKey.trim();
+    if (!trimmed) return false;
+
+    try {
+        const res = await fetch(
+            `https://api.themoviedb.org/3/configuration?api_key=${encodeURIComponent(
+                trimmed
+            )}`
+        );
+
+        if (!res.ok) {
+            // 401, 403 등 → 잘못된 키
+            return false;
+        }
+
+        // 응답은 굳이 안 써도 되지만 파싱은 한 번 해둠
+        await res.json();
+        return true;
+    } catch (e) {
+        console.error("TMDB API 검증 중 오류:", e);
+        return false;
+    }
+}
+
 // ✅ 회원가입 시도
 // SigninPage에서: tryRegister(email, password, success, fail);
 export function tryRegister(
@@ -42,9 +73,9 @@ export function tryRegister(
     success();
 }
 
-// ✅ 로그인 시도
+// ✅ 로그인 시도 (+ TMDB API Key 검증 추가)
 // SigninPage에서: tryLogin(email, password, remember, success, fail);
-export function tryLogin(
+export async function tryLogin(
     email: string,
     password: string,
     saveToken: boolean,        // Remember me 체크 여부
@@ -61,14 +92,19 @@ export function tryLogin(
         return;
     }
 
-    // 과제 요구사항: TMDB API 키로 비밀번호를 사용
-    localStorage.setItem(TMDB_KEY, user.password);
+    // 🔥 1단계: TMDB API Key로 비밀번호를 사용하므로, 실제로 유효한 키인지 검사
+    const ok = await validateTmdbKey(user.password);
+    if (!ok) {
+        fail(
+            "유효하지 않은 TMDB API Key 입니다.\nTMDB 사이트에서 발급받은 유효한 키를 비밀번호로 입력해 주세요."
+        );
+        return;
+    }
 
-    // 현재 로그인된 유저 정보 저장
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-
-    // 자동 로그인 여부 저장
-    localStorage.setItem(KEEP_LOGIN_KEY, saveToken ? "true" : "false");
+    // 🔥 2단계: 검증 성공 시 localStorage에 키 및 유저 정보 저장
+    localStorage.setItem(TMDB_KEY, user.password);                 // TMDB 키 저장
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));  // 현재 로그인 유저
+    localStorage.setItem(KEEP_LOGIN_KEY, saveToken ? "true" : "false"); // 자동 로그인 여부
 
     success(user);
 }

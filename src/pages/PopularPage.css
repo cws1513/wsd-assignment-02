@@ -3,6 +3,8 @@
     margin: 0 auto;
     padding: 20px 16px 40px;
     color: #fff;
+    /* 🔥 확대 시 가로 스크롤 방지 */
+    overflow-x: hidden;
 }
 
 .popular-title {
@@ -36,53 +38,128 @@
     transform: translateY(-1px);
 }
 
-/* 영화 카드 그리드 */
+/* 카드 그리드 */
 .popular-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 16px;
     margin-top: 8px;
+
+    /* 🔥 카드 확대/박스쉐도우로 인한 튀어나옴 숨기기 */
+    position: relative;
+    overflow: hidden;
 }
 
+/* 카드 */
 .popular-card {
     background: #111;
     border-radius: 12px;
     overflow: hidden;
-    cursor: pointer;
+    position: relative;
     transition: transform 0.22s ease, box-shadow 0.22s ease, border 0.22s ease;
     border: 1px solid transparent;
 }
 
-.popular-card img {
-    width: 100%;
-    display: block;
-}
-
-.popular-card-title {
-    font-size: 0.9rem;
-    padding: 0.45rem 0.4rem 0.6rem;
-    color: #ddd;
-}
-
 .popular-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    transform: scale(1.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
 }
 
-/* 찜(wishlist)된 카드 */
+/* 찜 효과 */
 .popular-card.wish {
     border-color: #e50914;
     box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
 }
 
-/* 로딩 영역 */
+.popular-thumb-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.popular-thumb {
+    width: 100%;
+    display: block;
+}
+
+/* hover 오버레이 */
+.popular-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.85),
+            rgba(0, 0, 0, 0.1)
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.8rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.popular-card:hover .popular-card-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 오버레이 버튼 (Home과 공통 스타일 베이스) */
+.overlay-btn {
+    width: 100%;
+    border-radius: 999px;
+    border: none;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+}
+
+.overlay-btn.primary {
+    background: #e50914;
+    color: #fff;
+}
+
+.overlay-btn.secondary {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+/* 🔥 Popular 카드에서도 찜 버튼 색 Home과 통일 */
+
+/* 아직 찜 안 된 카드에서: hover 시 빨간색으로 변함 */
+.popular-card:not(.wish) .overlay-btn.secondary:hover {
+    background: #e50914;
+}
+
+/* 이미 찜된 카드에서는 항상 빨간색 유지 */
+.popular-card.wish .overlay-btn.secondary {
+    background: #e50914;
+}
+
+/* 제목 */
+.popular-card-title {
+    font-size: 0.9rem;
+    padding: 0.45rem 0.5rem 0.7rem;
+    color: #ddd;
+}
+
+/* 로딩 */
 .popular-loading {
     text-align: center;
     padding: 1.5rem 0;
     font-size: 1rem;
     color: #ccc;
 }
-
 .popular-loading.more {
     font-size: 0.9rem;
 }
@@ -123,17 +200,7 @@
     text-align: center;
 }
 
-/* 반응형 */
-@media (max-width: 768px) {
-    .popular-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 12px;
-    }
-
-    .popular-title {
-        font-size: 1.4rem;
-    }
-}
+/* Top 버튼 */
 .popular-top-btn {
     position: fixed;
     right: 2rem;
@@ -147,12 +214,52 @@
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease,
+    opacity 0.2s ease;
     z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.popular-top-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .popular-top-btn:hover {
     background: #f6121d;
     transform: translateY(-2px);
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.8);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .popular-container {
+        padding: 16px 14px 32px;
+    }
+
+    .popular-title {
+        font-size: 1.4rem;
+    }
+
+    .popular-view-selector {
+        flex-wrap: wrap;
+    }
+
+    .popular-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+
+    .popular-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.65);
+    }
+
+    .popular-top-btn {
+        right: 1.2rem;
+        bottom: 1.4rem;
+        padding: 0.5rem 0.9rem;
+        font-size: 0.8rem;
+    }
 }
