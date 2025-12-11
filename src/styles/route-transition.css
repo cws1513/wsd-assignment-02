@@ -1,0 +1,23 @@
+/* src/styles/route-transition.css */
+
+/* 라우트 전환 시 사용할 공통 컨테이너 */
+.route-transition {
+    /* 살짝 오른쪽에서 슬며시 들어오는 느낌 */
+    animation: route-slide-fade-in 0.32s ease-out;
+}
+
+/* 필요하면 개별 페이지에서 추가로 쓰는 용도 */
+.page-transition {
+    animation: route-slide-fade-in 0.32s ease-out;
+}
+
+@keyframes route-slide-fade-in {
+    from {
+        opacity: 0;
+        transform: translateX(16px); /* 오른쪽에서 들어오는 느낌 */
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

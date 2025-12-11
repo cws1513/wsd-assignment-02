@@ -1,5 +1,6 @@
 // src/pages/PopularPage.tsx
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { fetchMovies, URLS } from "../libs/URL";
 import { WishlistManager } from "../libs/useWishlist";
 import type { Movie } from "../libs/useWishlist";
@@ -10,45 +11,41 @@ export default function PopularPage() {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [viewType, setViewType] = useState<"table" | "infinite">("table");
-    const [showTopButton, setShowTopButton] = useState(false); // ⬅ Top 버튼 표시 여부
+    const [showTopButton, setShowTopButton] = useState(false);
 
     const wishlist = new WishlistManager();
 
-    // ✅ 페이지 번호 / 뷰 타입이 바뀔 때마다 TMDB에서 인기 영화 가져오기
+    // ✅ 페이지 / 뷰 타입 변경 시 데이터 로드
     useEffect(() => {
         let cancelled = false;
 
         async function fetchPage() {
             setLoading(true);
             try {
+                // 살짝 딜레이 주어 로딩 감지
                 await new Promise((res) => setTimeout(res, 1000));
                 const data = await fetchMovies(URLS.popular(page));
 
-                // Table → 해당 페이지 데이터만 사용
-                // Infinite → 이전 것 + 새 페이지 데이터 더해서 누적
                 setMovies((prev) =>
                     viewType === "table" || page === 1 ? data : [...prev, ...data]
                 );
             } catch (e) {
                 console.error("인기 영화 불러오기 실패:", e);
             } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
+                if (!cancelled) setLoading(false);
             }
         }
 
         fetchPage();
-
         return () => {
             cancelled = true;
         };
     }, [page, viewType]);
 
-    // ✅ Infinite Scroll 모드에서만: 스크롤 끝에 도달하면 다음 페이지 자동 로딩 + Top 버튼 표시
+    // ✅ Infinite Scroll + Top 버튼
     useEffect(() => {
         if (viewType !== "infinite") {
-            setShowTopButton(false); // 테이블 모드일 땐 숨김
+            setShowTopButton(false);
             return;
         }
 
@@ -63,7 +60,6 @@ export default function PopularPage() {
                 setPage((prev) => prev + 1);
             }
 
-            // 스크롤이 일정 높이 이상 내려가면 Top 버튼 보이게
             setShowTopButton(window.scrollY > 400);
         }
 
@@ -73,21 +69,8 @@ export default function PopularPage() {
 
     const handleToggleWishlist = (movie: Movie) => {
         wishlist.toggleWishlist(movie);
-        // 스타일 즉시 반영 위해 새 배열로 복사
-        setMovies([...movies]);
-    };
-
-    const switchToTable = () => {
-        setViewType("table");
-        setPage(1); // 1페이지부터 새로
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    const switchToInfinite = () => {
-        setMovies([]); // 누적 리스트 초기화
-        setPage(1);
-        setViewType("infinite");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        // 🔄 로컬 state 강제 갱신 → 찜 테두리/버튼 즉시 반영
+        setMovies((prev) => [...prev]);
     };
 
     const handleTopClick = () => {
@@ -95,77 +78,118 @@ export default function PopularPage() {
     };
 
     return (
-        <div className="popular-container">
-            <h1 className="popular-title">📈 대세 콘텐츠</h1>
+        <>
+            <div className="popular-container page-transition">
+                <h1 className="popular-title">📈 대세 콘텐츠</h1>
 
-            {/* ✅ View 선택 버튼 */}
-            <div className="popular-view-selector">
-                <button
-                    className={viewType === "table" ? "active" : ""}
-                    onClick={switchToTable}
-                >
-                    Table View
-                </button>
-                <button
-                    className={viewType === "infinite" ? "active" : ""}
-                    onClick={switchToInfinite}
-                >
-                    Infinite Scroll
-                </button>
-            </div>
-
-            {/* ✅ 첫 페이지 로딩 중일 때만 크게 표시 */}
-            {loading && page === 1 && (
-                <div className="popular-loading">Loading...</div>
-            )}
-
-            {/* ✅ 영화 카드 그리드 */}
-            <div className={`popular-grid ${viewType}`}>
-                {movies.map((movie) => (
-                    <div
-                        key={movie.id}
-                        className={`popular-card ${
-                            wishlist.isWishlisted(movie.id) ? "wish" : ""
-                        }`}
-                        onClick={() => handleToggleWishlist(movie)}
-                    >
-                        <img
-                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                            alt={movie.title}
-                        />
-                        <h3 className="popular-card-title">{movie.title}</h3>
-                    </div>
-                ))}
-            </div>
-
-            {/* ✅ Table View일 때만 하단 페이지네이션 표시 */}
-            {viewType === "table" && (
-                <div className="popular-pagination">
+                {/* View 선택 */}
+                <div className="popular-view-selector">
                     <button
-                        disabled={page === 1 || loading}
-                        onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                        className={viewType === "table" ? "active" : ""}
+                        onClick={() => {
+                            setViewType("table");
+                            setPage(1);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
                     >
-                        이전
+                        Table View
                     </button>
-                    <span className="page-number">{page}</span>
-                    <button disabled={loading} onClick={() => setPage((prev) => prev + 1)}>
-                        다음
+                    <button
+                        className={viewType === "infinite" ? "active" : ""}
+                        onClick={() => {
+                            setMovies([]);
+                            setViewType("infinite");
+                            setPage(1);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                    >
+                        Infinite Scroll
                     </button>
                 </div>
-            )}
 
-            {/* ✅ Infinite 모드에서 추가로 불러올 때 표시 */}
-            {viewType === "infinite" && loading && page > 1 && (
-                <div className="popular-loading more">더 불러오는 중...</div>
-            )}
+                {loading && page === 1 && (
+                    <div className="popular-loading">Loading...</div>
+                )}
 
-            {/* ✅ Infinite Scroll 모드 + 일정 스크롤 이상일 때 Top 버튼 표시 */}
-            {viewType === "infinite" && showTopButton && (
-                <button className="popular-top-btn" onClick={handleTopClick}>
+                {/* 카드 그리드 */}
+                <div className={`popular-grid ${viewType}`}>
+                    {movies.map((movie) => {
+                        const isWish = wishlist.isWishlisted(movie.id);
+
+                        return (
+                            <div
+                                key={movie.id}
+                                className={`popular-card ${isWish ? "wish" : ""}`}
+                            >
+                                <div className="popular-thumb-wrapper">
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                        alt={movie.title}
+                                        className="popular-thumb"
+                                    />
+
+                                    <div className="popular-card-overlay">
+                                        <Link
+                                            to={`/movie/${movie.id}`}
+                                            className="overlay-btn primary"
+                                        >
+                                            상세 보기
+                                        </Link>
+                                        <button
+                                            className="overlay-btn secondary"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                handleToggleWishlist(movie);
+                                            }}
+                                        >
+                                            {isWish ? "찜 해제" : "찜하기"}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <h3 className="popular-card-title">
+                                    {movie.title}
+                                </h3>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Table View 페이징 */}
+                {viewType === "table" && (
+                    <div className="popular-pagination">
+                        <button
+                            disabled={page === 1 || loading}
+                            onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                        >
+                            이전
+                        </button>
+                        <span className="page-number">{page}</span>
+                        <button
+                            disabled={loading}
+                            onClick={() => setPage((prev) => prev + 1)}
+                        >
+                            다음
+                        </button>
+                    </div>
+                )}
+
+                {/* Infinite 모드 로딩 */}
+                {viewType === "infinite" && loading && page > 1 && (
+                    <div className="popular-loading more">더 불러오는 중...</div>
+                )}
+            </div>
+
+            {/* Top 버튼 (fixed) */}
+            {viewType === "infinite" && (
+                <button
+                    className={`popular-top-btn ${showTopButton ? "visible" : ""}`}
+                    onClick={handleTopClick}
+                >
                     ↑ Top
                 </button>
             )}
-        </div>
+        </>
     );
 }
-

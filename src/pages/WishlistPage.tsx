@@ -1,3 +1,4 @@
+// src/pages/WishlistPage.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { WishlistManager, type Movie } from "../libs/useWishlist";
@@ -13,8 +14,14 @@ export default function WishlistPage() {
         setMovies(wishlist.getWishlist());
     }, []);
 
+    const handleRemove = (movie: Movie) => {
+        wishlist.toggleWishlist(movie); // 로컬스토리지에서 제거
+        // 화면에서도 즉시 제거
+        setMovies((prev) => prev.filter((m) => m.id !== movie.id));
+    };
+
     return (
-        <div className="wishlist-container">
+        <div className="wishlist-page page-transition">
             <h1 className="wishlist-title">💖 내가 찜한 리스트</h1>
 
             {movies.length === 0 && (
@@ -40,9 +47,21 @@ export default function WishlistPage() {
                             <div className="wishlist-card-info">
                                 <h3>{movie.title}</h3>
                                 <span className="wishlist-sub">
-                                    상세 페이지로 이동
+                                    클릭 시 상세 페이지로 이동
                                 </span>
                             </div>
+
+                            {/* 🔥 위시리스트에서 바로 제거 버튼 */}
+                            <button
+                                type="button"
+                                className="wishlist-remove-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // 상세페이지 이동 막기
+                                    handleRemove(movie);
+                                }}
+                            >
+                                찜 해제
+                            </button>
                         </div>
                     ))}
                 </div>

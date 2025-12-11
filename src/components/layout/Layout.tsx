@@ -1,14 +1,26 @@
-import { Outlet } from "react-router-dom";
+// src/components/layout/Layout.tsx
+import React from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
-import "./Layout.css";
+import "./Layout.css"; // 필요하면 유지
 
-export default function Layout() {
+const Layout: React.FC = () => {
+    const location = useLocation();
+
     return (
-        <div className="app-layout">
+        <>
+            {/* 항상 고정 헤더 */}
             <Header />
-            <main className="main">
-                <Outlet />
+
+            {/* 페이지 영역 */}
+            <main className="page-container">
+                {/* 🔥 pathname이 바뀔 때마다 새 div + 애니메이션 */}
+                <div key={location.pathname} className="route-transition">
+                    <Outlet />
+                </div>
             </main>
-        </div>
+        </>
     );
-}
+};
+
+export default Layout;

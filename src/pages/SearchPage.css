@@ -1,6 +1,12 @@
+/* ========================================= */
+/* 🔍 SEARCH PAGE 기본 레이아웃 */
+/* ========================================= */
+
 .search-container {
     padding: 20px;
     color: #fff;
+    /* 🔥 카드 확대 시 가로 스크롤 방지 */
+    overflow-x: hidden;
 }
 
 .search-title {
@@ -9,7 +15,10 @@
     margin-bottom: 1rem;
 }
 
-/* 검색 폼 */
+/* ========================================= */
+/* 🔎 검색 폼 */
+/* ========================================= */
+
 .search-form {
     display: flex;
     gap: 0.5rem;
@@ -47,7 +56,44 @@
     transform: translateY(-1px);
 }
 
-/* 필터 영역 */
+/* ========================================= */
+/* 🕒 최근 검색어 */
+/* ========================================= */
+
+.recent-searches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.recent-label {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.recent-chip {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: transparent;
+    color: #eee;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.recent-chip:hover {
+    background: #333;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* ========================================= */
+/* ⬇ 필터 영역 */
+/* ========================================= */
+
 .search-filters {
     display: flex;
     flex-wrap: wrap;
@@ -93,7 +139,10 @@
     transform: translateY(-1px);
 }
 
+/* ========================================= */
 /* 안내 / 결과 없음 */
+/* ========================================= */
+
 .search-helper,
 .search-empty {
     margin-top: 2rem;
@@ -101,7 +150,10 @@
     color: #aaa;
 }
 
-/* 로딩 */
+/* ========================================= */
+/* 로딩 스켈레톤 */
+/* ========================================= */
+
 .search-loading {
     margin-top: 1.5rem;
     text-align: center;
@@ -131,37 +183,125 @@
     }
 }
 
-/* 결과 그리드 */
+/* ========================================= */
+/* 🎬 검색 결과 Grid */
+/* ========================================= */
+
 .search-grid {
     margin-top: 1rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 16px;
+
+    /* 🔥 카드 hover 확대 시 양 옆으로 튀어나오는 것 방지 */
+    position: relative;
+    overflow: hidden;
 }
 
-.search-card {
+/* ========================================= */
+/* 🍿 넷플릭스 스타일 영화 카드 */
+/* ========================================= */
+
+.movie-card {
     background: #111;
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    border: 1px solid transparent;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
 }
 
-.search-card:hover {
-    transform: scale(1.07);
+.movie-card:hover {
+    transform: scale(1.1);
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
 }
 
-.search-card.wish {
-    outline: 2px solid #e50914;
+/* 찜 효과 */
+.movie-card.wish {
+    border-color: #e50914;
     box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
 }
 
-.search-card img {
+/* 포스터 감싸는 영역 */
+.movie-thumb-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 포스터 이미지 */
+.movie-thumb {
     width: 100%;
     display: block;
 }
 
+/* hover 오버레이 (상세보기 / 찜하기 버튼) */
+.movie-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.85),
+            rgba(0, 0, 0, 0.15)
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.8rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* hover 시 오버레이 등장 */
+.movie-card:hover .movie-card-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 오버레이 버튼 */
+.overlay-btn {
+    width: 100%;
+    border-radius: 999px;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+}
+
+.overlay-btn.primary {
+    background: #e50914;
+    color: #fff;
+}
+
+.overlay-btn.secondary {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+/* 🔥 Search에서도 찜 버튼 색을 Home/Popular와 통일 */
+
+/* 아직 찜 안 된 상태에서: hover 시 빨간색으로 변함 */
+.movie-card:not(.wish) .overlay-btn.secondary:hover {
+    background: #e50914;
+}
+
+/* 이미 찜된 카드에서는 항상 빨간색 유지 */
+.movie-card.wish .overlay-btn.secondary {
+    background: #e50914;
+}
+
+/* 영화 텍스트 info */
 .search-card-info {
     padding: 0.5rem 0.6rem 0.7rem;
 }
@@ -177,7 +317,10 @@
     color: #ffdd57;
 }
 
+/* ========================================= */
 /* 페이지네이션 */
+/* ========================================= */
+
 .search-pagination {
     display: flex;
     justify-content: center;
@@ -211,14 +354,36 @@
     font-size: 0.9rem;
 }
 
+/* ========================================= */
 /* 반응형 */
+/* ========================================= */
+
 @media (max-width: 768px) {
+    .search-container {
+        padding: 16px 14px 32px;
+    }
+
+    .search-title {
+        font-size: 1.4rem;
+    }
+
     .search-form {
         flex-direction: column;
+        align-items: stretch;
     }
 
     .search-filters {
         flex-direction: column;
         align-items: flex-start;
+        gap: 0.6rem;
+    }
+
+    .search-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .movie-card:hover {
+        transform: scale(1.03); /* 모바일에서 너무 안 튀게 */
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
     }
 }

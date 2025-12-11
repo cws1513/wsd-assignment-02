@@ -1,6 +1,6 @@
 // src/pages/SigninPage.tsx
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./SigninPage.css";
 import { tryLogin, tryRegister } from "../libs/Authentication";
 
@@ -12,14 +12,20 @@ export default function SigninPage() {
     const [remember, setRemember] = useState(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
     const isLogin = mode === "login";
+
+    // 🔹 ProtectedRoute에서 넘겨준 "원래 위치"
+    const from =
+        (location.state as { from?: { pathname?: string } } | null)?.from
+            ?.pathname || "/";
 
     const isValidEmail = (value: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(value);
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         if (!isValidEmail(email)) {
@@ -27,6 +33,9 @@ export default function SigninPage() {
             return;
         }
 
+        // ------------------------------
+        // 🔹 회원가입 모드
+        // ------------------------------
         if (!isLogin) {
             if (password !== passwordConfirm) {
                 alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
@@ -37,29 +46,36 @@ export default function SigninPage() {
                 email,
                 password,
                 () => {
-                    alert("회원가입에 성공했습니다. 로그인 화면으로 이동합니다.");
+                    alert("회원가입에 성공했습니다!");
                     setMode("login");
                     setPassword("");
                     setPasswordConfirm("");
                 },
-                (msg) => {
+                (msg: string) => {
                     alert(msg);
                 }
             );
-        } else {
-            tryLogin(
-                email,
-                password,
-                remember,
-                () => {
-                    alert("로그인에 성공했습니다.");
-                    navigate("/");
-                },
-                (msg) => {
-                    alert(msg);
-                }
-            );
+
+            return;
         }
+
+        // ------------------------------
+        // 🔹 로그인 모드 (TMDB Key 검증 + redirect)
+        // tryLogin(email, password, saveToken, success(user), fail)
+        // ------------------------------
+        await tryLogin(
+            email,
+            password,
+            remember, // ⭐ Remember me (saveToken)
+            () => {
+                alert("로그인 성공");
+                // ✅ 원래 가려던 페이지가 있으면 거기로, 없으면 홈으로
+                navigate(from, { replace: true });
+            },
+            (msg: string) => {
+                alert(msg);
+            }
+        );
     };
 
     const switchMode = () => {
@@ -69,7 +85,7 @@ export default function SigninPage() {
     };
 
     return (
-        <div className="auth-page">
+        <div className="auth-page page-transition">
             <div
                 className={`auth-container ${
                     isLogin ? "login-mode" : "register-mode"
@@ -92,7 +108,7 @@ export default function SigninPage() {
                     </button>
                 </div>
 
-                {/* 오른쪽 폼 영역 */}
+                {/* 오른쪽 폼 */}
                 <div className="auth-form-wrapper">
                     <form className="auth-form" onSubmit={handleSubmit}>
                         <div className="auth-field">
@@ -100,7 +116,6 @@ export default function SigninPage() {
                             <input
                                 id="email"
                                 type="email"
-                                placeholder="example@email.com"
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -111,13 +126,12 @@ export default function SigninPage() {
                             <label htmlFor="password">
                                 비밀번호{" "}
                                 <span className="auth-hint">
-                  (TMDB API Key 또는 비밀번호)
-                </span>
+                                    (TMDB API Key 또는 비밀번호)
+                                </span>
                             </label>
                             <input
                                 id="password"
                                 type="password"
-                                placeholder="비밀번호를 입력하세요"
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -126,14 +140,17 @@ export default function SigninPage() {
 
                         {!isLogin && (
                             <div className="auth-field">
-                                <label htmlFor="passwordConfirm">비밀번호 확인</label>
+                                <label htmlFor="passwordConfirm">
+                                    비밀번호 확인
+                                </label>
                                 <input
                                     id="passwordConfirm"
                                     type="password"
-                                    placeholder="비밀번호를 다시 입력하세요"
                                     required
                                     value={passwordConfirm}
-                                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                                    onChange={(e) =>
+                                        setPasswordConfirm(e.target.value)
+                                    }
                                 />
                             </div>
                         )}
@@ -144,9 +161,11 @@ export default function SigninPage() {
                                     <input
                                         type="checkbox"
                                         checked={remember}
-                                        onChange={(e) => setRemember(e.target.checked)}
+                                        onChange={(e) =>
+                                            setRemember(e.target.checked)
+                                        }
                                     />
-                                    Remember me (자동 로그인)
+                                    자동 로그인 (Remember me)
                                 </label>
                             </div>
                         )}

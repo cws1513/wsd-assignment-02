@@ -1,10 +1,15 @@
-/* 헤더 기본 */
+/* 헤더 기본 – 처음엔 완전 투명 */
 .header {
-    position: sticky;
+    position: fixed;          /* 화면 상단에 고정 */
     top: 0;
-    z-index: 10;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent);
-    backdrop-filter: blur(8px);
+    left: 0;
+    right: 0;
+    z-index: 50;
+
+    background: transparent;  /* 완전 투명 */
+    box-shadow: none;
+    backdrop-filter: none;
+
     color: white;
     padding: 0.8rem 1.5rem;
     transition:
@@ -13,7 +18,7 @@
             padding 0.3s ease;
 }
 
-/* 스크롤 된 상태 */
+/* 스크롤 된 상태 – 넷플릭스처럼 검은 바 */
 .header.header-scrolled {
     background: rgba(0, 0, 0, 0.96);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
@@ -21,11 +26,13 @@
 }
 
 .header-inner {
-    max-width: 1200px;
+    /* 🔥 넷플릭스처럼 왼쪽 정렬 느낌으로 조정 */
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;   /* 로고 + 메뉴를 왼쪽에 모으기 */
+    gap: 2rem;
 }
 
 /* 로고 */
@@ -41,6 +48,8 @@
 .nav {
     display: flex;
     gap: 1.4rem;
+    /* 🔥 로고와 약간 거리 두기 */
+    margin-left: 2rem;
 }
 
 .nav-link {
@@ -68,6 +77,9 @@
     display: flex;
     align-items: center;
     gap: 0.6rem;
+
+    /* 🔥 메뉴들 뒤에서 오른쪽 끝으로 밀기 */
+    margin-left: auto;
 }
 
 .user-email {
@@ -116,7 +128,7 @@
     box-shadow: 0 0 18px rgba(229, 9, 20, 0.5);
 }
 
-/* 반응형: 모바일에서 간격 조금 줄이기 */
+/* 반응형 */
 @media (max-width: 768px) {
     .header-inner {
         gap: 0.75rem;
@@ -124,6 +136,7 @@
 
     .nav {
         gap: 0.8rem;
+        margin-left: 1rem;
     }
 
     .nav-link {

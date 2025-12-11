@@ -1,29 +1,52 @@
+/* src/pages/MovieDetailPage.css */
+
+/* 전체 컨테이너 */
 .detail-container {
-    color: white;
-    background: #000;
     min-height: 100vh;
+    background: #000;
+    color: #fff;
 }
 
-/* 🔥 넷플릭스 배너 */
+/* 로딩 */
+.detail-loading {
+    padding: 3rem 0;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+/* ===================== */
+/*        배너 영역      */
+/* ===================== */
+
 .detail-banner {
-    height: 70vh;
-    background-size: cover;
-    background-position: center;
     position: relative;
+    width: 100%;
+    min-height: 70vh;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 .banner-overlay {
+    position: relative;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, #000 10%, transparent 70%);
+    padding: 5rem 5% 4rem;
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(0, 0, 0, 0.6) 40%,
+            transparent 100%
+    );
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    padding: 3rem;
+    gap: 2rem;
 }
 
+/* 왼쪽 정보 */
 .banner-info {
-    max-width: 40%;
+    max-width: 50rem;
 }
 
 .banner-title {
@@ -34,36 +57,59 @@
 
 .banner-overview {
     font-size: 1rem;
-    line-height: 1.5;
-    opacity: 0.9;
-    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: #e3e3e3;
+    max-width: 40rem;
+    margin-bottom: 1rem;
 }
 
-.banner-meta span {
-    margin-right: 1rem;
-    opacity: 0.8;
+.banner-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 1.5rem;
 }
 
 /* 버튼 */
 .wish-btn,
 .wish-toggle-btn {
-    margin-right: 10px;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
     border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
+    margin-right: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
 }
 
 .wish-btn {
-    background: white;
-    color: black;
+    background: #fff;
+    color: #000;
+}
+
+.wish-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
 
 .wish-toggle-btn {
-    background: #333;
-    color: white;
+    background: rgba(109, 109, 110, 0.8);
+    color: #fff;
+}
+
+.wish-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
 
 .wish-toggle-btn.active {
@@ -72,31 +118,166 @@
 
 /* 오른쪽 포스터 */
 .banner-poster img {
-    width: 300px;
+    width: 250px;
     border-radius: 12px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
 }
 
-/* 추천 콘텐츠 */
+/* 반응형 - 배너 */
+@media (max-width: 900px) {
+    .banner-overlay {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 4rem 6% 3rem;
+    }
+
+    .banner-poster img {
+        width: 180px;
+    }
+
+    .banner-title {
+        font-size: 2.2rem;
+    }
+}
+
+/* ===================== */
+/*    비슷한 콘텐츠 영역 */
+/* ===================== */
+
 .recommend-title {
-    padding: 2rem;
     font-size: 1.6rem;
+    font-weight: 700;
+    margin: 2rem 5% 1rem;
 }
 
 .recommend-grid {
-    padding: 0 2rem 4rem;
+    padding: 0 5% 3rem;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
 }
 
-.recommend-card img {
+/* 카드 기본 */
+.recommend-card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border 0.25s ease;
+    border: 1px solid transparent;
+}
+
+/* 찜됨 강조 */
+.recommend-card.wish {
+    border-color: #e50914;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
+}
+
+/* 썸네일 래퍼 */
+.recommend-thumb-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 썸네일 이미지 */
+.recommend-thumb {
     width: 100%;
-    border-radius: 8px;
+    display: block;
+    transition: transform 0.25s ease;
 }
 
-.detail-loading {
-    color: white;
+/* hover 시 확대 + 카드 그림자 */
+.recommend-card:hover .recommend-thumb {
+    transform: scale(1.08);
+}
+
+.recommend-card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* 오버레이 */
+.recommend-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.9) 30%,
+            rgba(0, 0, 0, 0.4) 70%,
+            transparent 100%
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    gap: 0.4rem;
+    padding: 0.7rem;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* hover 시 오버레이 등장 */
+.recommend-card:hover .recommend-card-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 버튼 스타일 (홈/서치와 통일) */
+.overlay-btn {
+    border-radius: 999px;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
     text-align: center;
-    padding: 3rem;
-    font-size: 1.4rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    transition:
+            background 0.18s ease,
+            color 0.18s ease,
+            transform 0.18s ease;
+}
+
+.overlay-btn.primary {
+    background: #fff;
+    color: #000;
+}
+
+.overlay-btn.secondary {
+    background: rgba(109, 109, 110, 0.9);
+    color: #fff;
+}
+
+/* 🔥 비슷한 콘텐츠에서 찜 버튼 hover 시 빨간색 변환 */
+.recommend-card .overlay-btn.secondary:hover {
+    background: #e50914;
+    color: #fff;
+}
+
+/* 🔥 이미 찜된 영화일 경우 기본 상태도 빨간 버튼 */
+.recommend-card.wish .overlay-btn.secondary {
+    background: #e50914;
+    color: #fff;
+}
+
+/* 카드 제목 */
+.recommend-title-text {
+    font-size: 0.9rem;
+    padding: 0.45rem 0.45rem 0.6rem;
+    color: #f5f5f5;
+}
+
+/* 반응형 카드 */
+@media (max-width: 768px) {
+    .recommend-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
 }
