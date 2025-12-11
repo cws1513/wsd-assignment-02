@@ -123,13 +123,16 @@ src/
 로그인 시 입력한 Key가 최우선 적용됨.
 
 🔐 5. 로그인 / 인증 구조
-로그인 과정 요약
+### 🔐 인증 / TMDB API Key 검증 플로우
 
-사용자가 email + TMDB Key 입력
-
-Authentication.ts에서 TMDB Key를 /configuration API로 검증
-
-성공 시:
+- 사용자는 로그인 화면에서 **이메일 + TMDB API Key** 를 입력한다.
+- 로그인 시, `Authentication.ts`에서 TMDB의 `/configuration` 엔드포인트를 호출하여  
+  입력된 TMDB API Key가 실제로 유효한지 검증한다.
+- 검증에 성공하면:
+    - `localStorage`에 `TMDb-Key`를 저장한다.
+    - `currentUser` 정보와 `keepLogin` 옵션을 함께 저장하여 자동 로그인 상태를 유지한다.
+- 이후 모든 TMDB API 호출은 **로그인 시 저장된 TMDB Key**를 사용하도록 구현되어 있다.
+시:
 
 TMDb-Key 저장
 
