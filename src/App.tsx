@@ -1,5 +1,5 @@
 // src/App.tsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/layout/Layout";
 
@@ -15,7 +15,7 @@ import "./App.css";
 
 export default function App() {
     return (
-        <BrowserRouter>
+        <HashRouter>
             <Routes>
                 {/* ✅ 로그인 없이 접근 가능한 페이지 */}
                 <Route path="/signin" element={<SigninPage />} />
@@ -31,6 +31,6 @@ export default function App() {
                     </Route>
                 </Route>
             </Routes>
-        </BrowserRouter>
+        </HashRouter>
     );
 }
