@@ -1,87 +1,83 @@
-✅ 📌 MyFlix – TMDB 기반 영화 정보 서비스
+# 📌 MyFlix – TMDB 기반 영화 정보 서비스
 
-Netflix UI 스타일을 기반으로 제작된 React + TypeScript 영화 정보 서비스입니다.
-사용자가 입력한 TMDB API Key의 실제 유효성을 검증하여 로그인하며,
-영화 검색 / 인기 영화 / 상세 정보 / 찜(Wishlist) / 추천 콘텐츠 등 다양한 기능을 제공합니다.
+Netflix UI 스타일을 기반으로 제작된 **React + TypeScript** 영화 정보 서비스입니다. 사용자가 입력한 **TMDB API Key** 유효성 검증 후 로그인할 수 있으며, 영화 검색, 인기 영화, 상세 정보, 찜(Wishlist), 추천 콘텐츠 등 다양한 기능을 제공합니다.
 
-⭐ 1. 주요 기능 (필수 요구사항 + 가산점 포함)
-🔐 인증 기능
+---
 
-회원가입 (email + TMDB API Key 저장)
+## ⭐ 1. 주요 기능 (필수 요구사항 + 가산점 포함)
 
-로그인 시 TMDB API Key 실제 검증 (/configuration 호출)
+### 🔐 인증 기능
 
-keepLogin으로 자동 로그인 지원
+* **회원가입**: Email + TMDB Key 저장
+* **로그인**: TMDB API Key 유효성 검증 후 로그인 ( `/configuration` 호출)
+* **자동 로그인** (`keepLogin`)
+* **접근 제어**: `ProtectedRoute`를 통한 비로그인 사용자 접근 제한
+    * (비로그인 시: `/popular`, `/search`, `/movie/:id`, `/wishlist` 접근 불가)
 
-ProtectedRoute로 페이지 접근 보호
+### 🎬 영화 기능 전체
 
-🎬 영화 기능 전체
+* **🏠 HomePage**
+    * 넷플릭스 스타일 **YouTube Hero 영상**
+    * 4종 슬라이더: Popular / Now Playing / Top Rated / Upcoming
+    * 카드 Hover 시 **상세보기** 및 **찜하기 버튼** 표시
+    * **로딩 Skeleton** 적용
+* **📈 PopularPage**
+    * **Table View** (Prev/Next 버튼)
+    * **Infinite Scroll View** (스크롤 시 자동 로드)
+    * **Top 버튼**
+    * Hover Overlay + 찜 연동
+* **🔍 SearchPage**
+    * TMDB Search API 기반 검색
+    * **정렬**: 기본 / 평점순 / 인기순
+    * **필터**: 최소 평점
+    * **최근 검색어 5개** 저장
+    * **Skeleton Loading** 및 Hover Overlay
+* **🎬 MovieDetailPage**
+    * **배경 이미지 Hero Banner**
+    * 장르, 평점, 개봉일, 줄거리 표시
+    * 찜 버튼
+    * **추천 콘텐츠** (Recommendations)
+    * Hover Overlay 통일
+* **❤️ WishlistPage**
+    * **LocalStorage** 기반 찜 리스트 관리
+    * 모든 화면과 **실시간 연동**
 
-HomePage
+---
 
-넷플릭스처럼 Hero 영상(YouTube) 자동 재생
+## ✨ 2. UI / UX 가산점 기능
 
-4종 슬라이드: Popular / Now Playing / Top Rated / Upcoming
+| 기능 적용 여부 | 항목 |
+| :--- | :--- |
+| **✔** | API Key 유효성 검증 |
+| **✔** | Protected Routes |
+| **✔** | 최근 검색어 저장 |
+| **✔** | Skeleton Loading |
+| **✔** | Route Transition Animation |
+| **✔** | Hover Overlay Animation |
+| **✔** | 반응형 UI |
+| **✔** | Infinite Scroll |
+| **✔** | Table/Grid 통합 스타일 |
+| **✔** | Hero 영상 & 배너 |
+| **✔** | 추천 콘텐츠 UI |
 
-PopularPage
+---
 
-Table View (페이지 이동 버튼)
+## 🛠 3. 기술 스택
 
-Infinite Scroll View (스크롤 시 자동 로드)
+| 분야 | 기술 |
+| :--- | :--- |
+| **프론트엔드** | React + Vite + TypeScript |
+| **UI/CSS** | CSS, Swiper.js |
+| **라우팅** | React Router DOM |
+| **상태 관리** | useState, useEffect, LocalStorage |
+| **데이터 요청** | Fetch, Axios |
+| **외부 API** | TMDB API |
 
-Top 버튼 제공
+---
 
-SearchPage
+## 📁 4. 프로젝트 폴더 구조
 
-검색 + TMDB Search API 사용
-
-필터: 최소 평점
-
-정렬: 기본/평점순/인기순
-
-최근 검색어 5개 저장
-
-Skeleton Loading
-
-MovieDetailPage
-
-영화 상세 정보 표시
-
-넷플릭스 스타일 Hero Banner
-
-찜하기 버튼
-
-추천 콘텐츠(Recommendations)
-
-WishlistPage
-
-찜한 영화 localStorage 저장
-
-모든 화면에서 찜 기능 연동
-
-✨ UI / UX 가산점 기능
-
-페이지 전환 글로벌 애니메이션
-
-Hover Overlay (상세보기 / 찜하기 버튼)
-
-Skeleton Loading UI
-
-반응형 모바일 UI
-
-확대 시 가로 스크롤 방지 (overflow-x: hidden)
-
-Hero 영상이 헤더에 가려지지 않도록 레이아웃 조정
-
-🛠 2. 기술 스택
-분야	기술
-프론트엔드	React + Vite + TypeScript
-UI	CSS, Swiper.js
-라우팅	React Router DOM
-데이터 요청	Fetch, Axios
-상태 관리	useState, useEffect, LocalStorage
-외부 API	TMDB API
-📁 3. 폴더 구조
+```bash
 src/
 │
 ├── components/
@@ -99,16 +95,15 @@ src/
 │   └── SigninPage.tsx
 │
 ├── libs/
-│   ├── Authentication.ts      # 로그인 + TMDB Key 검증
+│   ├── Authentication.ts      # 로그인 + TMDB API Key 검증 로직
 │   ├── URL.ts                 # TMDB API URL 생성기
-│   └── useWishlist.ts         # 찜(Wishlist) 관리 로직
+│   └── useWishlist.ts         # Wishlist(LocalStorage) 관리 클래스
 │
 ├── router/
-│   └── ProtectedRoute.tsx
+│   └── ProtectedRoute.tsx     # 로그인 여부에 따른 접근 제어
 │
 └── styles/
-└── route-transition.css   # 페이지 전환 애니메이션
-
+    └── route-transition.css   # 페이지 전환 애니메이션
 🚀 4. 실행 방법
 1) 패키지 설치
    npm install
