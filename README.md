@@ -81,29 +81,50 @@ Netflix UI 스타일을 기반으로 제작된 **React + TypeScript** 영화 정
 src/
 │
 ├── components/
-│   └── layout/
-│       ├── Header.tsx
-│       ├── Layout.tsx
-│       └── Header.css
+│   ├── layout/
+│   │   ├── Header.tsx
+│   │   ├── Layout.tsx
+│   │   └── Header.css
+│   │
+│   ├── home/
+│   │   ├── HomeSection.tsx
+│   │   └── HomeSection.css
+│   │
+│   ├── HeroBanner.tsx
+│   ├── HeroBanner.css
+│   └── SectionRow.tsx
 │
 ├── pages/
 │   ├── HomePage.tsx
+│   ├── HomePage.css
 │   ├── PopularPage.tsx
+│   ├── PopularPage.css
 │   ├── SearchPage.tsx
+│   ├── SearchPage.css
 │   ├── MovieDetailPage.tsx
+│   ├── MovieDetailPage.css
 │   ├── WishlistPage.tsx
-│   └── SigninPage.tsx
+│   ├── WishlistPage.css
+│   ├── SigninPage.tsx
+│   └── SigninPage.css
 │
 ├── libs/
 │   ├── Authentication.ts      # 로그인 + TMDB API Key 검증 로직
-│   ├── URL.ts                 # TMDB API URL 생성기
+│   ├── URL.ts                 # TMDB API URL 생성기 / API 호출 함수
 │   └── useWishlist.ts         # Wishlist(LocalStorage) 관리 클래스
 │
 ├── router/
-│   └── ProtectedRoute.tsx     # 로그인 여부에 따른 접근 제어
+│   ├── ProtectedRoute.tsx     # 로그인 여부에 따른 접근 제어
+│   └── AppRouter.tsx          # 라우팅 구성(있는 경우)
 │
-└── styles/
-    └── route-transition.css   # 페이지 전환 애니메이션
+├── styles/
+│   └── route-transition.css   # 페이지 전환 애니메이션(전역)
+│
+├── types/
+│   └── swiper-css.d.ts        # Swiper CSS 타입 선언(빌드 오류 방지)
+│
+├── App.tsx
+└── main.tsx
 🚀 4. 실행 방법
 1) 패키지 설치
    npm install
